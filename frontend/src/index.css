@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans;
+  }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Leaflet Map Overrides */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  font-family: inherit;
+  z-index: 10;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  padding: 4px !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 8px 10px !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+/* Tooltip styles */
+.leaflet-tooltip.route-leaflet-tooltip {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border: 1px solid #1E293B;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+.leaflet-tooltip.route-leaflet-tooltip::before {
+  border-top-color: #0F172A;
+}
+
+/* Marker pulse */
+@keyframes markerPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(13, 148, 136, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+  }
+}

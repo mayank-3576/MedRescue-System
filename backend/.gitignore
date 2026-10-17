@@ -1,0 +1,47 @@
+
+.env
+.env.*
+!.env.example
+!.env.*.example
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+node_modules/
+dist/
+build/
+.vite/
+
+*.db
+*.sqlite
+*.sqlite3
+.DS_Store
+Thumbs.db
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Frontend dependencies
+node_modules/
+dist/
+build/
