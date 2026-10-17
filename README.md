@@ -81,3 +81,5 @@ An administrator can open **Payments & Wallet** to see captured orders and submi
 The login page links to **Request a hospital staff account**. Applicants select an active hospital, choose an email as their login ID, set a strong password, and submit a masked government photo ID plus hospital appointment/authorization proof. Applications stay pending; applicants cannot sign in until an administrator opens both files, confirms both checks, and approves the request in **Staff Accounts**. Approval creates the active hospital staff account. Rejected applications require a reason.
 
 Verification is a manual administrator review; the project does not connect to a government personal identity database. Uploaded documents are encrypted on the backend while pending and deleted after approval or rejection. For Aadhaar, applicants must upload a masked copy. Keep `SECRET_KEY` private and stable while pending requests exist so their encrypted files can be opened for review.
+
+# MedRescue-System
