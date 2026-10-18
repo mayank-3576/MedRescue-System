@@ -23,6 +23,7 @@ from app.auth.permissions import verify_hospital_access, require_admin
 from app.services.expiry_service import calculate_days_remaining, determine_risk_level, sync_batch_alert
 from app.services.audit_service import log_audit_event
 from app.services.barcode_catalog_service import direct_scan_and_add_batch
+from app.validation import validate_batch_dates
 
 router = APIRouter(prefix="/api/batches", tags=["Batches"])
 
@@ -270,6 +271,14 @@ def update_batch(
     verify_hospital_access(batch.hospital_id, current_user)
 
     dump = update_data.model_dump(exclude_unset=True)
+    manufacturing_date = dump.get("manufacturing_date", batch.manufacturing_date)
+    expiry_date = dump.get("expiry_date", batch.expiry_date)
+    if manufacturing_date is not None and expiry_date is not None:
+        try:
+            validate_batch_dates(manufacturing_date, expiry_date)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
+
     old_quantity = batch.available_quantity
     for field, val in dump.items():
         setattr(batch, field, val)
