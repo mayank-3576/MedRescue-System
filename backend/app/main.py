@@ -42,18 +42,22 @@ async def lifespan(app: FastAPI):
     - Seeds idempotent demonstration data on initial startup
     - Recalculates real-time expiry risk levels and alerts
     """
-    # 1. Initialize tables
-    Base.metadata.create_all(bind=engine)
+    # 1. Initialize tables safely
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"[Lifespan Error] Base.metadata.create_all failed: {e}")
 
     # 2. Seed default demo data idempotently
-    db = SessionLocal()
     try:
-        seed_database(db)
-        refresh_all_alerts(db)
+        db = SessionLocal()
+        try:
+            seed_database(db)
+            refresh_all_alerts(db)
+        finally:
+            db.close()
     except Exception as e:
         print(f"[Lifespan Error] Database seed/alert refresh failed: {e}")
-    finally:
-        db.close()
 
     yield
     # Cleanup on shutdown (if any)
