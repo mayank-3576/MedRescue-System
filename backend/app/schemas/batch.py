@@ -1,6 +1,8 @@
 from datetime import date, datetime
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, model_validator
+
+from app.validation import validate_batch_dates
 
 
 class BatchBase(BaseModel):
@@ -19,7 +21,10 @@ class BatchBase(BaseModel):
 
 
 class BatchCreate(BatchBase):
-    pass
+    @model_validator(mode="after")
+    def validate_dates(self):
+        validate_batch_dates(self.manufacturing_date, self.expiry_date)
+        return self
 
 
 class BatchUpdate(BaseModel):
@@ -32,6 +37,12 @@ class BatchUpdate(BaseModel):
     storage_requirements: Optional[str] = None
     status: Optional[str] = None
     is_demo: Optional[bool] = None
+
+    @model_validator(mode="after")
+    def validate_dates(self):
+        if self.manufacturing_date is not None and self.expiry_date is not None:
+            validate_batch_dates(self.manufacturing_date, self.expiry_date)
+        return self
 
 
 class BatchResponse(BatchBase):
@@ -85,6 +96,12 @@ class QuickScanAddRequest(BaseModel):
     unit_mrp: Optional[float] = None
     unit_purchase_cost: Optional[float] = None
     storage_requirements: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_dates(self):
+        if self.manufacturing_date is not None and self.expiry_date is not None:
+            validate_batch_dates(self.manufacturing_date, self.expiry_date)
+        return self
 
 
 class QuickScanAddResponse(BaseModel):

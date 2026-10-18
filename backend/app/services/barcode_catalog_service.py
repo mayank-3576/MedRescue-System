@@ -11,6 +11,7 @@ from app.models.hospital import Hospital
 from app.models.inventory_movement import InventoryMovement
 from app.services.expiry_service import calculate_days_remaining, determine_risk_level, sync_batch_alert
 from app.services.audit_service import log_audit_event
+from app.validation import validate_batch_dates
 
 
 # Global / National Pharmaceutical GTIN Master Barcode Database
@@ -230,6 +231,11 @@ def direct_scan_and_add_batch(
     Auto-registers drug if missing, creates batch inward entry, logs inventory movement,
     evaluates expiry alerts, and returns confirmed stock summary.
     """
+    today = date.today()
+    exp_date = expiry_date or (today + timedelta(days=540))  # Standard 18-month default
+    mfg_date = manufacturing_date or (today - timedelta(days=60))
+    validate_batch_dates(mfg_date, exp_date)
+
     hospital = db.query(Hospital).filter(Hospital.id == hospital_id, Hospital.is_active.is_(True)).first()
     if not hospital:
         raise ValueError(f"Hospital with ID {hospital_id} is inactive or not found")
@@ -237,9 +243,6 @@ def direct_scan_and_add_batch(
     # 1. Look up or auto-register medicine
     medicine, is_new = lookup_or_auto_register_medicine(db, barcode, user_id=user_id)
 
-    today = date.today()
-    exp_date = expiry_date or (today + timedelta(days=540))  # Standard 18-month default
-    mfg_date = manufacturing_date or (today - timedelta(days=60))
     mrp = unit_mrp if unit_mrp is not None and unit_mrp > 0 else medicine.unit_price
     cost = unit_purchase_cost if unit_purchase_cost is not None and unit_purchase_cost >= 0 else round(mrp * 0.70, 2)
     storage = storage_requirements or ("Cold Chain (2°C - 8°C)" if medicine.requires_cold_chain else "Room Temperature (< 25°C)")
